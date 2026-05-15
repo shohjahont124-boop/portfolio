@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tohirov | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue-deep: #020818;
+      --blue-dark: #050f2a;
+      --blue-mid: #0a1f4e;
+      --blue-core: #0d3b8f;
+      --blue-bright: #1a6bff;
+      --blue-glow: #2d8bff;
+      --blue-neon: #00b4ff;
+      --cyan: #00e5ff;
+      --white: #e8f4ff;
+      --silver: #8ab4d4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--blue-deep);
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CUSTOM CURSOR */
+    .cursor {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--cyan);
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s;
+      box-shadow: 0 0 20px var(--cyan), 0 0 40px var(--blue-neon);
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(0,229,255,0.4);
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+    }
+
+    /* PARTICLE CANVAS */
+    #particles { position: fixed; top:0; left:0; width:100%; height:100%; z-index:0; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 60px;
+      background: rgba(2,8,24,0.6);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,180,255,0.15);
+    }
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.4rem; font-weight: 900;
+      color: var(--cyan);
+      letter-spacing: 4px;
+      text-shadow: 0 0 20px var(--cyan);
+    }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      color: var(--silver); text-decoration: none;
+      font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase;
+      font-family: 'Share Tech Mono', monospace;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 15px var(--cyan); }
+
+    /* SECTIONS */
+    section { position: relative; z-index: 1; }
+
+    /* HERO */
+    .hero {
+      height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero-content { position: relative; z-index: 2; }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; letter-spacing: 5px;
+      color: var(--blue-neon);
+      border: 1px solid rgba(0,180,255,0.4);
+      padding: 8px 20px; border-radius: 2px;
+      margin-bottom: 32px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .hero-name {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 6px;
+      background: linear-gradient(135deg, #fff 0%, var(--cyan) 50%, var(--blue-bright) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeUp 0.9s ease 0.2s both;
+      text-shadow: none;
+      filter: drop-shadow(0 0 30px rgba(0,229,255,0.5));
+    }
+
+    .hero-title {
+      font-size: 1.1rem; letter-spacing: 6px; text-transform: uppercase;
+      color: var(--silver); margin: 20px 0 40px;
+      font-family: 'Share Tech Mono', monospace;
+      animation: fadeUp 0.9s ease 0.4s both;
+    }
+
+    .hero-title span { color: var(--blue-neon); }
+
+    .hero-cta {
+      display: inline-flex; gap: 16px;
+      animation: fadeUp 0.9s ease 0.6s both;
+    }
+
+    .btn {
+      padding: 14px 36px;
+      font-family: 'Orbitron', monospace;
+      font-size: 0.75rem; letter-spacing: 3px;
+      text-transform: uppercase; text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.3s; cursor: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue-core), var(--blue-bright));
+      color: #fff; border: none;
+      box-shadow: 0 0 25px rgba(26,107,255,0.5);
+    }
+    .btn-primary:hover { box-shadow: 0 0 50px rgba(0,229,255,0.8); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: var(--cyan);
+      border: 1px solid rgba(0,229,255,0.5);
+    }
+    .btn-outline:hover {
+      background: rgba(0,229,255,0.08);
+      border-color: var(--cyan);
+      box-shadow: 0 0 25px rgba(0,229,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    /* GLOWING ORBS */
+    .orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(26,107,255,0.25) 0%, transparent 70%);
+      top: -100px; left: -100px;
+      animation: float1 8s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,229,255,0.2) 0%, transparent 70%);
+      bottom: -80px; right: -80px;
+      animation: float2 10s ease-in-out infinite;
+    }
+    .orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,180,255,0.15) 0%, transparent 70%);
+      top: 40%; left: 50%; transform: translate(-50%,-50%);
+      animation: float3 12s ease-in-out infinite;
+    }
+
+    /* GRID LINES BACKGROUND */
+    .grid-bg {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background-image:
+        linear-gradient(rgba(0,180,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,180,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* SECTION COMMON */
+    .section-wrap { max-width: 1200px; margin: 0 auto; padding: 100px 40px; }
+    .section-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 6px;
+      color: var(--blue-neon); text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700; letter-spacing: 3px;
+      color: var(--white);
+      margin-bottom: 60px;
+    }
+    .section-title span { color: var(--cyan); }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 80px; align-items: center;
+    }
+    .about-avatar {
+      position: relative; display: flex; justify-content: center;
+    }
+    .avatar-frame {
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-core), var(--blue-neon));
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      box-shadow: 0 0 60px rgba(0,180,255,0.4), inset 0 0 40px rgba(0,0,0,0.5);
+    }
+    .avatar-frame::before {
+      content: '';
+      position: absolute; inset: -3px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--cyan), var(--blue-bright), var(--blue-core));
+      z-index: -1;
+      animation: rotateBorder 4s linear infinite;
+    }
+    .avatar-inner {
+      width: 268px; height: 268px; border-radius: 50%;
+      background: var(--blue-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', monospace;
+      font-size: 5rem; font-weight: 900;
+      color: var(--cyan);
+      text-shadow: 0 0 30px var(--cyan);
+    }
+    .about-text p {
+      font-size: 1.05rem; line-height: 1.9;
+      color: var(--silver); margin-bottom: 20px;
+    }
+    .about-text p strong { color: var(--cyan); }
+    .info-chips {
+      display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px;
+    }
+    .chip {
+      padding: 8px 18px;
+      background: rgba(10,31,78,0.8);
+      border: 1px solid rgba(0,180,255,0.2);
+      border-radius: 2px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; color: var(--blue-neon);
+      letter-spacing: 2px;
+    }
+
+    /* SKILLS */
+    .skills-bg { background: rgba(5,15,42,0.5); }
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;
+    }
+    .skill-card {
+      background: rgba(10,31,78,0.5);
+      border: 1px solid rgba(0,180,255,0.15);
+      border-radius: 4px; padding: 30px 24px;
+      text-align: center;
+      transition: all 0.4s; cursor: none;
+      position: relative; overflow: hidden;
+    }
+    .skill-card::before {
+      content: '';
+      position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0,229,255,0.05), transparent);
+      transition: left 0.5s;
+    }
+    .skill-card:hover::before { left: 100%; }
+    .skill-card:hover {
+      border-color: rgba(0,229,255,0.5);
+      box-shadow: 0 0 30px rgba(0,180,255,0.2);
+      transform: translateY(-4px);
+    }
+    .skill-icon { font-size: 2.5rem; margin-bottom: 16px; }
+    .skill-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem; letter-spacing: 3px;
+      color: var(--cyan); margin-bottom: 8px;
+    }
+    .skill-desc { font-size: 0.85rem; color: var(--silver); line-height: 1.5; }
+    .skill-bar-wrap {
+      height: 2px; background: rgba(0,180,255,0.1);
+      border-radius: 1px; margin-top: 16px; overflow: hidden;
+    }
+    .skill-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue-bright), var(--cyan));
+      border-radius: 1px;
+      animation: barGrow 1.5s ease-out both;
+    }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 28px;
+    }
+    .project-card {
+      background: rgba(10,31,78,0.4);
+      border: 1px solid rgba(0,180,255,0.15);
+      border-radius: 6px; padding: 36px 30px;
+      position: relative; overflow: hidden;
+      transition: all 0.4s; cursor: none;
+      display: flex; flex-direction: column;
+    }
+    .project-link-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: auto; padding-top: 24px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 3px;
+      color: var(--cyan); text-decoration: none;
+      border-top: 1px solid rgba(0,180,255,0.1);
+      transition: color 0.3s, gap 0.3s;
+    }
+    .project-link-btn:hover { color: #fff; gap: 14px; }
+    .project-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue-bright), var(--cyan), var(--blue-bright));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s;
+    }
+    .project-card:hover::after { transform: scaleX(1); }
+    .project-card:hover {
+      border-color: rgba(0,229,255,0.35);
+      box-shadow: 0 10px 50px rgba(0,100,255,0.15), 0 0 0 1px rgba(0,229,255,0.1);
+      transform: translateY(-6px);
+    }
+    .project-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem; letter-spacing: 4px;
+      color: rgba(0,180,255,0.4); margin-bottom: 20px;
+    }
+    .project-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem; font-weight: 700; letter-spacing: 2px;
+      color: var(--white); margin-bottom: 14px;
+    }
+    .project-desc { font-size: 0.95rem; color: var(--silver); line-height: 1.7; margin-bottom: 24px; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      padding: 4px 12px;
+      background: rgba(26,107,255,0.15);
+      border: 1px solid rgba(26,107,255,0.3);
+      border-radius: 2px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 2px; color: var(--blue-glow);
+    }
+
+    /* CONTACT */
+    .contact-bg {
+      background: linear-gradient(180deg, var(--blue-deep) 0%, rgba(5,15,42,0.8) 100%);
+    }
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+    }
+    .contact-info h3 {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.5rem; color: var(--white);
+      letter-spacing: 2px; margin-bottom: 20px;
+    }
+    .contact-info p { font-size: 1rem; color: var(--silver); line-height: 1.8; margin-bottom: 40px; }
+
+    .contact-links { display: flex; flex-direction: column; gap: 16px; }
+    .contact-link {
+      display: flex; align-items: center; gap: 20px;
+      padding: 18px 24px;
+      background: rgba(10,31,78,0.5);
+      border: 1px solid rgba(0,180,255,0.15);
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.3s; cursor: none;
+    }
+    .contact-link:hover {
+      border-color: rgba(0,229,255,0.5);
+      background: rgba(0,229,255,0.05);
+      transform: translateX(6px);
+      box-shadow: 0 0 25px rgba(0,180,255,0.15);
+    }
+    .contact-link-icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--blue-core), var(--blue-bright));
+      border-radius: 4px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .contact-link-info {}
+    .contact-link-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 3px;
+      color: var(--blue-neon); margin-bottom: 4px;
+    }
+    .contact-link-value { font-size: 0.95rem; color: var(--white); font-weight: 600; }
+
+    /* STATS */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+      background: rgba(0,180,255,0.08);
+      border: 1px solid rgba(0,180,255,0.15); border-radius: 4px;
+      overflow: hidden; margin-bottom: 60px;
+    }
+    .stat {
+      padding: 36px 20px; text-align: center;
+      background: var(--blue-dark); transition: background 0.3s;
+    }
+    .stat:hover { background: rgba(10,31,78,0.8); }
+    .stat-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 2.4rem; font-weight: 900;
+      color: var(--cyan);
+      text-shadow: 0 0 20px rgba(0,229,255,0.5);
+    }
+    .stat-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem; letter-spacing: 3px;
+      color: var(--silver); margin-top: 6px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(0,180,255,0.1);
+      padding: 40px 60px;
+      display: flex; justify-content: space-between; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .footer-text {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; letter-spacing: 3px;
+      color: rgba(138,180,212,0.4);
+    }
+    .footer-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem; font-weight: 900;
+      color: rgba(0,229,255,0.3); letter-spacing: 4px;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float1 {
+      0%,100% { transform: translate(0,0); }
+      50% { transform: translate(30px,40px); }
+    }
+    @keyframes float2 {
+      0%,100% { transform: translate(0,0); }
+      50% { transform: translate(-40px,20px); }
+    }
+    @keyframes float3 {
+      0%,100% { transform: translate(-50%,-50%); }
+      50% { transform: translate(-50%,-55%); }
+    }
+    @keyframes rotateBorder {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes barGrow {
+      from { width: 0; }
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px; max-width: 1200px; margin: 0 auto;
+      background: linear-gradient(90deg, transparent, rgba(0,180,255,0.2), transparent);
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--blue-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--blue-core); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--blue-bright); }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .stats-row { grid-template-columns: repeat(2,1fr); }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="grid-bg"></div>
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">TOHIROV</div>
+  <ul class="nav-links">
+    <li><a href="#about">Haqida</a></li>
+    <li><a href="#skills">Ko'nikmalar</a></li>
+    <li><a href="#projects">Loyihalar</a></li>
+    <li><a href="#contact">Aloqa</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="hero-content">
+    <div class="hero-badge">⚡ WEB DEVELOPER & DESIGNER</div>
+    <h1 class="hero-name">TOHIROV</h1>
+    <p class="hero-title">Yarataman · <span>Loyihayman</span> · Innovatsiya qilaman</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary scroll-btn">Loyihalarni ko'rish</a>
+      <a href="#contact" class="btn btn-outline scroll-btn">Bog'lanish</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-wrap">
+    <div class="about-grid fade-in">
+      <div class="about-avatar">
+        <div class="avatar-frame">
+          <div class="avatar-inner">T</div>
+        </div>
+      </div>
+      <div class="about-text">
+        <div class="section-label">// men haqimda</div>
+        <h2 class="section-title">Kimman <span>Men?</span></h2>
+        <p>Salom! Men <strong>Tohirov</strong> — zamonaviy va innovatsion veb-saytlar yaratishga ixtisoslashgan dasturchi va dizayner. Har bir loyihamda nafaqat funksionallik, balki estetik go'zallik va foydalanuvchi tajribasini birinchi o'ringa qo'yaman.</p>
+        <p>Mening maqsadim — raqamli dunyoda <strong>noyob va unutilmas</strong> mahsulotlar yaratish. Frontend texnologiyalarini chuqur bilib, har qanday g'oyani jonlantira olaman. Kichik biznesdan tortib, yirik korporativ platformalargacha — barchasini professional darajada yechaman.</p>
+        <p>Yangi texnologiyalarni o'rganishni va ijodiy muammolarni yechishni sevaman. Har bir kod satrida <strong>qalb va ehtirosni</strong> qo'yaman.</p>
+        <div class="info-chips">
+          <span class="chip">📍 O'zbekiston</span>
+          <span class="chip">💼 Freelancer</span>
+          <span class="chip">🚀 Full-Stack</span>
+          <span class="chip">🎨 UI/UX</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills" class="skills-bg">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <div class="section-label">// texnologiyalar</div>
+      <h2 class="section-title">Ko'nikma va <span>Texnologiyalar</span></h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card fade-in">
+        <div class="skill-icon">🌐</div>
+        <div class="skill-name">HTML5</div>
+        <div class="skill-desc">Semantik va zamonaviy HTML tuzilmalari, accessibility va SEO optimizatsiya</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:95%"></div></div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">🎨</div>
+        <div class="skill-name">CSS3 / SASS</div>
+        <div class="skill-desc">Animatsiyalar, Flexbox, Grid, responsive dizayn va mukammal stillar</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:90%"></div></div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">⚡</div>
+        <div class="skill-name">JavaScript</div>
+        <div class="skill-desc">ES6+, DOM manipulyatsiya, async/await, zamonaviy JS pattern'lar</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:88%"></div></div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">⚛️</div>
+        <div class="skill-name">React.js</div>
+        <div class="skill-desc">Komponent arxitekturasi, hooks, state management, SPA ilovalar</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:82%"></div></div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">🟩</div>
+        <div class="skill-name">Node.js</div>
+        <div class="skill-desc">Backend API'lar, Express, REST servislar va server-side dasturlash</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:75%"></div></div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">🐍</div>
+        <div class="skill-name">Python</div>
+        <div class="skill-desc">Avtomatlashtirish, Django framework, data processing va skriptlar</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:70%"></div></div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">🗄️</div>
+        <div class="skill-name">SQL / MongoDB</div>
+        <div class="skill-desc">Ma'lumotlar bazasi loyihalash, so'rovlar optimallashtirish va NoSQL</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:72%"></div></div>
+      </div>
+      <div class="skill-card fade-in">
+        <div class="skill-icon">🎭</div>
+        <div class="skill-name">Figma / UI</div>
+        <div class="skill-desc">Wireframe, prototip, UI/UX dizayn va dizayn sistemalari yaratish</div>
+        <div class="skill-bar-wrap"><div class="skill-bar" style="width:80%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- STATS -->
+<section>
+  <div class="section-wrap" style="padding-top:60px;padding-bottom:60px;">
+    <div class="stats-row fade-in">
+      <div class="stat">
+        <div class="stat-num">50+</div>
+        <div class="stat-label">LOYIHALAR</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">30+</div>
+        <div class="stat-label">MIJOZLAR</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3+</div>
+        <div class="stat-label">YIL TAJRIBA</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">8+</div>
+        <div class="stat-label">TEXNOLOGIYA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <div class="section-label">// portfel</div>
+      <h2 class="section-title">Mening <span>Loyihalarim</span></h2>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card fade-in">
+        <div class="project-num">01 // WEB APP</div>
+        <div class="project-title">E-COMMERCE PLATFORM</div>
+        <div class="project-desc">To'liq funksional onlayn do'kon platforma. Mahsulot katalogi, savat tizimi, to'lov integratsiyasi va admin panel bilan jihozlangan.</div>
+        <div class="project-tags">
+          <span class="tag">REACT</span>
+          <span class="tag">NODE.JS</span>
+          <span class="tag">MONGODB</span>
+          <span class="tag">CSS3</span>
+        </div>
+        <a href="https://t.me/tohirov_690" target="_blank" rel="noopener noreferrer" class="project-link-btn">Ko'rish →</a>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-num">02 // DASHBOARD</div>
+        <div class="project-title">ANALYTICS DASHBOARD</div>
+        <div class="project-desc">Real-vaqt ma'lumotlarni vizualizatsiya qiluvchi analytics panel. Grafika, statistika va hisobotlar bilan to'liq jihozlangan.</div>
+        <div class="project-tags">
+          <span class="tag">JAVASCRIPT</span>
+          <span class="tag">D3.JS</span>
+          <span class="tag">PYTHON</span>
+          <span class="tag">SQL</span>
+        </div>
+        <a href="https://t.me/tohirov_690" target="_blank" rel="noopener noreferrer" class="project-link-btn">Ko'rish →</a>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-num">03 // LANDING</div>
+        <div class="project-title">CORPORATE WEBSITE</div>
+        <div class="project-desc">Kompaniya uchun zamonaviy korporativ veb-sayt. Animatsiyalar, parallax effektlar va responsive dizayn.</div>
+        <div class="project-tags">
+          <span class="tag">HTML5</span>
+          <span class="tag">CSS3</span>
+          <span class="tag">GSAP</span>
+          <span class="tag">JS</span>
+        </div>
+        <a href="https://t.me/tohirov_690" target="_blank" rel="noopener noreferrer" class="project-link-btn">Ko'rish →</a>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-num">04 // MOBILE APP</div>
+        <div class="project-title">FOOD DELIVERY APP</div>
+        <div class="project-desc">Oziq-ovqat yetkazib berish xizmati uchun mobil ilova. Geolokatsiya, real-vaqt kuzatuv va to'lov tizimi.</div>
+        <div class="project-tags">
+          <span class="tag">REACT NATIVE</span>
+          <span class="tag">NODE.JS</span>
+          <span class="tag">MAPS API</span>
+        </div>
+        <a href="https://t.me/tohirov_690" target="_blank" rel="noopener noreferrer" class="project-link-btn">Ko'rish →</a>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-num">05 // PLATFORM</div>
+        <div class="project-title">EDUCATION PLATFORM</div>
+        <div class="project-desc">Online ta'lim platformasi. Video darslar, testlar, sertifikatlar va o'quvchi progressini kuzatish tizimi.</div>
+        <div class="project-tags">
+          <span class="tag">REACT</span>
+          <span class="tag">DJANGO</span>
+          <span class="tag">POSTGRESQL</span>
+        </div>
+        <a href="https://t.me/tohirov_690" target="_blank" rel="noopener noreferrer" class="project-link-btn">Ko'rish →</a>
+      </div>
+      <div class="project-card fade-in">
+        <div class="project-num">06 // TOOL</div>
+        <div class="project-title">PORTFOLIO GENERATOR</div>
+        <div class="project-desc">Dasturchilar uchun avtomatik portfolio yaratuvchi asbob. Shablonlar, ranglar va shaxsiy sozlamalar.</div>
+        <div class="project-tags">
+          <span class="tag">NEXT.JS</span>
+          <span class="tag">TAILWIND</span>
+          <span class="tag">VERCEL</span>
+        </div>
+        <a href="https://t.me/tohirov_690" target="_blank" rel="noopener noreferrer" class="project-link-btn">Ko'rish →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-bg">
+  <div class="section-wrap">
+    <div class="fade-in">
+      <div class="section-label">// aloqa</div>
+      <h2 class="section-title">Bog'laning <span>Men Bilan</span></h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info fade-in">
+        <h3>Loyiha bormi? Gaplashaylik!</h3>
+        <p>Har qanday savol, hamkorlik taklifi yoki yangi loyiha haqida muloqot qilishga doimo tayyor. Menga yozing — tez javob beraman!</p>
+        <p style="color: var(--blue-neon); font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; letter-spacing: 2px;">⚡ 24 soat ichida javob beraman</p>
+      </div>
+      <div class="contact-links fade-in">
+        <a href="tel:+998880901602" class="contact-link">
+          <div class="contact-link-icon">📞</div>
+          <div class="contact-link-info">
+            <div class="contact-link-label">TELEFON</div>
+            <div class="contact-link-value">+998 88 090 16 02</div>
+          </div>
+        </a>
+        <a href="https://instagram.com/_tohirov_690" target="_blank" rel="noopener noreferrer" class="contact-link">
+          <div class="contact-link-icon">📸</div>
+          <div class="contact-link-info">
+            <div class="contact-link-label">INSTAGRAM</div>
+            <div class="contact-link-value">@_tohirov_690</div>
+          </div>
+        </a>
+        <a href="https://t.me/tohirov_690" target="_blank" rel="noopener noreferrer" class="contact-link">
+          <div class="contact-link-icon">✈️</div>
+          <div class="contact-link-info">
+            <div class="contact-link-label">TELEGRAM</div>
+            <div class="contact-link-value">@tohirov_690</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text">© 2024 TOHIROV. BARCHA HUQUQLAR HIMOYALANGAN.</div>
+  <div class="footer-logo">TOHIROV</div>
+  <div class="footer-text">TASHKENT · UZBEKISTAN</div>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cursor.style.left=mx+'px'; cursor.style.top=my+'px'; });
+  setInterval(()=>{ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; },16);
+
+  // PARTICLES
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => { canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+
+  const stars = Array.from({length:160}, ()=>({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    r: Math.random()*1.5+0.3,
+    a: Math.random(),
+    vx: (Math.random()-0.5)*0.2,
+    vy: (Math.random()-0.5)*0.2,
+    pulse: Math.random()*Math.PI*2
+  }));
+
+  function drawParticles() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const t = Date.now()*0.001;
+    stars.forEach(s => {
+      s.x += s.vx; s.y += s.vy;
+      if(s.x<0) s.x=canvas.width; if(s.x>canvas.width) s.x=0;
+      if(s.y<0) s.y=canvas.height; if(s.y>canvas.height) s.y=0;
+      const alpha = s.a * (0.5 + 0.5*Math.sin(t*1.5+s.pulse));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(0,180,255,${alpha})`;
+      ctx.fill();
+    });
+    // Connections
+    for(let i=0;i<stars.length;i++) {
+      for(let j=i+1;j<stars.length;j++) {
+        const dx=stars[i].x-stars[j].x, dy=stars[i].y-stars[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<100) {
+          ctx.beginPath();
+          ctx.moveTo(stars[i].x,stars[i].y);
+          ctx.lineTo(stars[j].x,stars[j].y);
+          ctx.strokeStyle=`rgba(0,100,255,${0.06*(1-dist/100)})`;
+          ctx.lineWidth=0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // SCROLL REVEAL
+  const faders = document.querySelectorAll('.fade-in');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('visible'),i*80); } });
+  },{ threshold:0.1, rootMargin:'0px 0px -40px 0px' });
+  faders.forEach(el=>obs.observe(el));
+
+  // SMOOTH SCROLL for nav and hero buttons
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // HOVER CURSOR SCALE
+  document.querySelectorAll('a,button,.skill-card,.project-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ cursor.style.width='20px'; cursor.style.height='20px'; ring.style.width='50px'; ring.style.height='50px'; });
+    el.addEventListener('mouseleave',()=>{ cursor.style.width='12px'; cursor.style.height='12px'; ring.style.width='36px'; ring.style.height='36px'; });
+  });
+</script>
+</body>
+</html>
